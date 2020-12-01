@@ -1,5 +1,6 @@
 import argparse
 import os
+from pathlib import Path
 
 class Options():
     def __init__(self):
@@ -15,12 +16,17 @@ class Options():
 
     def parse(self):
         self.opt = self.parser.parse_args() 
+        self.opt.input = Path(self.opt.input)
+        self.opt.output = Path(self.opt.output)
         return self.opt
     
     def parse_test(self):
-        self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small_separated/Rock/"])
+        self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small/000/", "--output", "./Rock"])
+        # self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small_separated/Rock/"])
         # self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small_separated/Rock/Rock.066536.wav"])
         # self.opt = self.parser.parse_args() 
+        self.opt.input = Path(self.opt.input)
+        self.opt.output = Path(self.opt.output)
         return self.opt
 
 
