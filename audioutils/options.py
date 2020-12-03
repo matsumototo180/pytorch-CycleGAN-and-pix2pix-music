@@ -1,9 +1,15 @@
 import argparse
 import os
-from pathlib import Path
 
 class Options():
     def __init__(self):
+        self.default_output = "./"
+        self.default_sr = 22050
+        self.default_stereo = False
+        self.defalut_wl = 1024
+        self.defalut_hl = 512
+        self.defalut_cl = 128
+
         self.parser = argparse.ArgumentParser()    # パーサを作る
         self.parser.add_argument('--input', required=True, help='path to audio file or directory')
         # additional parameters
@@ -14,19 +20,38 @@ class Options():
         self.parser.add_argument('--hl', type=int, default='512', help='hop length')
         self.parser.add_argument('--cl', type=int, default='128', help='signal crop length')
 
-    def parse(self):
+    def parse_cmdargs(self):
         self.opt = self.parser.parse_args() 
-        self.opt.input = Path(self.opt.input)
-        self.opt.output = Path(self.opt.output)
         return self.opt
     
-    def parse_test(self):
-        self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small/000/", "--output", "./Rock"])
-        # self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small_separated/Rock/"])
-        # self.opt = self.parser.parse_args(args=["--input", "/home/matsumoto/Downloads/fma/fma_small_separated/Rock/Rock.066536.wav"])
-        # self.opt = self.parser.parse_args() 
-        self.opt.input = Path(self.opt.input)
-        self.opt.output = Path(self.opt.output)
+    def parse(self, input, output = None, sr = None, stereo = None, wl = None, hl = None, cl = None):
+        
+        self.opt = self.parser.parse_args(args=["--input", input])
+        if output == None:
+            self.opt.output = self.default_output
+        else:
+            self.opt.output = output
+        if sr == None:
+            self.opt.sr = self.default_sr
+        else:
+            self.opt.sr = sr
+        if stereo == None:
+            self.opt.stereo = self.default_stereo
+        else:
+            self.opt.stereo = stereo
+        if wl == None:
+            self.opt.wl = self.defalut_wl
+        else:
+            self.opt.wl = wl
+        if hl == None:
+            self.opt.hl = self.defalut_hl
+        else:
+            self.opt.hl = hl
+        if cl == None:
+            self.opt.cl = self.defalut_hl
+        else:
+            self.opt.cl = cl
+
         return self.opt
 
 
