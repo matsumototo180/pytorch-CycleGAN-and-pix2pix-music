@@ -38,7 +38,7 @@ if __name__ == '__main__':
     
     print("reading audio files")
     files_path = utils.getAudioFilesPath(opt.input)
-    waves = [librosa.load(i, sr=opt.sr, mono=opt.stereo) for i in files_path[0:10]]
+    waves = [librosa.load(i, sr=opt.sr, mono=opt.stereo) for i in files_path]
     
     print("calculating cqts")
     cqts = [librosa.cqt(i[0], opt.sr, opt.hl, n_bins=n_bins, bins_per_octave=bins_per_octave) for i in waves]
