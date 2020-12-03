@@ -34,7 +34,7 @@ if __name__ == '__main__':
     
     print("reading audio files")
     files_path = utils.getAudioFilesPath(opt.input)
-    waves = [librosa.load(i, sr=opt.sr, mono=opt.stereo) for i in files_path[0:10]]
+    waves = [librosa.load(i, sr=opt.sr, mono=opt.stereo) for i in files_path]
     
     print("calculating stfts")
     stfts = [librosa.stft(i[0], opt.wl, opt.hl, opt.wl, dtype=np.complex128) for i in waves]
