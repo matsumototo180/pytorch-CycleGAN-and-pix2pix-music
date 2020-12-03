@@ -2,7 +2,7 @@ import argparse
 import os
 
 class Options():
-    def __init__(self):
+    def __init__(self, inverse = False):
         self.default_output = "./"
         self.default_sr = 22050
         self.default_stereo = False
@@ -10,6 +10,8 @@ class Options():
         self.defalut_wl = 1024
         self.defalut_hl = 512
         self.defalut_cl = 128
+
+        self.inverse = inverse
 
         self.parser = argparse.ArgumentParser()    # パーサを作る
         self.parser.add_argument('--input', required=True, help='path to audio file or directory')
@@ -22,13 +24,20 @@ class Options():
         self.parser.add_argument('--hl', type=int, default='512', help='hop length')
         self.parser.add_argument('--cl', type=int, default='128', help='signal crop length')
 
+        if self.inverse:
+            self.parser.add_argument('--phase_input', required=True, help='path to phase file or directory')
+
     def parse_cmdargs(self):
         self.opt = self.parser.parse_args() 
         return self.opt
     
-    def parse(self, input, output = None, sr = None, stereo = None, crop = None, wl = None, hl = None, cl = None):
-        
-        self.opt = self.parser.parse_args(args=["--input", input])
+    def parse(self, input, output = None, sr = None, stereo = None, crop = None, wl = None, hl = None, cl = None, phase_input = None):
+
+        if self.inverse:
+            self.opt = self.parser.parse_args(args=["--input", input, "--phase_input", phase_input])
+        else:
+            self.opt = self.parser.parse_args(args=["--input", input])
+
         if output == None:
             self.opt.output = self.default_output
         else:
