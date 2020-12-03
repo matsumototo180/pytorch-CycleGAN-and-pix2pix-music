@@ -1,3 +1,14 @@
+# wavまたはmp3形式のオーディオファイルをSTFT変換し、振幅行列と位相行列を出力する
+# 【コマンドライン引数】
+# --input   入力ファイルのパスまたはディレクトリ ※必須
+# --output  出力ディレクトリ（指定したパスが存在しない場合はディレクトリが作られる）
+# --sr      サンプリングレート
+# --stereo  この引数を指定するとステレオで処理する（未実装）
+# --crop    この引数を指定するとSTFT後のデータをclでクロップする
+# --wl      STFTのwindow length
+# --hl      STFTのhop length
+# --cl      クロップする長さ
+
 from options import Options
 import utils
 import numpy as np
@@ -13,11 +24,11 @@ def magphaseSTFT(stft_complex, crop = False, cl = 128):
     Mdb = librosa.amplitude_to_db(M)
     # normalize values between -1 and 1
     Mdb_normed = 2*((Mdb - Mdb.min())/(Mdb.max() - Mdb.min())) - 1
-    
+
     return Mdb_normed, P
 
 if __name__ == '__main__':
-    # opt = Options().parse(input="/home/matsumoto/Downloads/fma/fma_small_separated/Rock/")
+    # opt = Options().parse(input="/home/matsumoto/Documents/data/music/fma/fma_small_separated/Rock/")
     opt = Options().parse_cmdargs()
     
     print("reading audio files")
@@ -34,9 +45,13 @@ if __name__ == '__main__':
     print("saving npy files")
     for i, npy in enumerate(magphases):
         out_path = (out_path_amp / Path(filenames[i]))
+        if len(npy[0][:,0]) % 2 != 0 :
+            utils.saveNpy(npy[0][:-1,:], out_path)
         utils.saveNpy(npy[0], out_path)
     
     for i, npy in enumerate(magphases):
         out_path = (out_path_phase / Path(filenames[i]))
+        if len(npy[0][:,0]) % 2 != 0 :
+            utils.saveNpy(npy[0][:-1,:], out_path)
         utils.saveNpy(npy[1], out_path)
     

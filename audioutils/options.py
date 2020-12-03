@@ -6,6 +6,7 @@ class Options():
         self.default_output = "./"
         self.default_sr = 22050
         self.default_stereo = False
+        self.default_crop = False
         self.defalut_wl = 1024
         self.defalut_hl = 512
         self.defalut_cl = 128
@@ -16,6 +17,7 @@ class Options():
         self.parser.add_argument('--output', default='./', help='path to output directory')
         self.parser.add_argument('--sr', type=int, default='22050', help='sampling rate')
         self.parser.add_argument('--stereo', action='store_true', help='if specified, load audio as stereo source')
+        self.parser.add_argument('--crop', action='store_true', help='if specified, crop waveform with cl')
         self.parser.add_argument('--wl', type=int, default='1024', help='window length')
         self.parser.add_argument('--hl', type=int, default='512', help='hop length')
         self.parser.add_argument('--cl', type=int, default='128', help='signal crop length')
@@ -24,7 +26,7 @@ class Options():
         self.opt = self.parser.parse_args() 
         return self.opt
     
-    def parse(self, input, output = None, sr = None, stereo = None, wl = None, hl = None, cl = None):
+    def parse(self, input, output = None, sr = None, stereo = None, crop = None, wl = None, hl = None, cl = None):
         
         self.opt = self.parser.parse_args(args=["--input", input])
         if output == None:
@@ -39,6 +41,10 @@ class Options():
             self.opt.stereo = self.default_stereo
         else:
             self.opt.stereo = stereo
+        if crop == None:
+            self.opt.crop = self.default_crop
+        else:
+            self.opt.crop = crop
         if wl == None:
             self.opt.wl = self.defalut_wl
         else:

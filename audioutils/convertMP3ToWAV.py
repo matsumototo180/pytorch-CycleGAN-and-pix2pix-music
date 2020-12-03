@@ -1,3 +1,10 @@
+# mp3形式のオーディオファイルをwav形式に変換する
+# 【コマンドライン引数】
+# --input   入力ファイルのパスまたはディレクトリ ※必須
+# --output  出力ディレクトリ（指定したパスが存在しない場合はディレクトリが作られる）
+# --sr      出力サンプリングレート
+# --stereo  この引数を指定するとステレオで出力する
+
 from options import Options
 import utils
 import subprocess
