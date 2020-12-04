@@ -35,6 +35,7 @@ from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from util import html
+from audioutils import stftToWAV
 
 def save_imgs(visuals, res_dir, img_path):
     image_dir = res_dir
@@ -46,7 +47,8 @@ def save_imgs(visuals, res_dir, img_path):
     for label, im_data in visuals.items():
         im = util.tensor2im(im_data, np.float32)
         image_name = '%s_%s.npy' % (name, label)
-        save_path = os.path.join(image_dir, image_name)
+        util.mkdirs(os.path.join(image_dir,"infer"))
+        save_path = os.path.join(image_dir,"infer", image_name)
         util.save_image(im, save_path, aspect_ratio=1.0)
         ims.append(image_name)
         txts.append(label)
@@ -85,3 +87,7 @@ if __name__ == '__main__':
         if i % 5 == 0:  # save images to an HTML file
             print('processing (%04d)-th image... %s' % (i, img_path))
         save_imgs(visuals, os.path.join(opt.results_dir, opt.name), img_path)
+
+    wav_dir = os.path.join(opt.results_dir, opt.name, "inv_wav")
+    util.mkdirs(wav_dir)
+    stftToWAV.stftToWAV(os.path.join(opt.results_dir, opt.name, "infer"), opt.istft_phdir, wav_dir, opt.istft_sr, opt.istft_wl, opt.istft_hl)

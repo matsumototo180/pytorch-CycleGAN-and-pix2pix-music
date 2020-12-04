@@ -13,7 +13,7 @@ def getAudioFilesPath(path):
         files_path = (list(p_path.iterdir()))
         files_path = [f for f in files_path if (f.suffix == ".wav") or (f.suffix == ".mp3")]
 
-    return files_path
+    return sorted(files_path)
 
 def getFilesPath(path, suffix = None):
     p_path = Path(path)
@@ -24,7 +24,7 @@ def getFilesPath(path, suffix = None):
         if suffix != None:
             files_path = [f for f in files_path if (f.suffix == suffix)]
 
-    return files_path
+    return sorted(files_path)
 
 def saveNpy(npyarray, output_path):
     output_path = Path(output_path)

@@ -26,16 +26,13 @@ def generateWavFromCQT(amp, phase, sr, hl):
 
     return iy
 
-if __name__ == '__main__':
-    # opt = Options(inverse=True).parse(input="/home/matsumoto/Documents/data/music/processed/rock/stft_amp/", phase_input="/home/matsumoto/Documents/data/music/processed/rock/stft_phase/", output="/home/matsumoto/Documents/data/music/processed/rock/")
-    opt = Options(inverse=True).parse_cmdargs()
-    
-    files_path_amp = utils.getFilesPath(Path(opt.input), ".npy")
-    files_path_phase = utils.getFilesPath(Path(opt.phase_input), ".npy")
+def cqtToWAV(amp_path, phase_path, output_path, sr, hl):
+    files_path_amp = utils.getFilesPath(Path(amp_path), ".npy")
+    files_path_phase = utils.getFilesPath(Path(phase_path), ".npy")
     
     total_length = str(min(len(files_path_amp), len(files_path_phase)))
-    for i, amp_path in enumerate(files_path_amp):
-        ampspec = np.load(amp_path)
+    for i, path in enumerate(files_path_amp):
+        ampspec = np.load(path)
         phspec = np.load(files_path_phase[i])
 
         ampspec = ampspec[0,:,:] if ampspec.ndim == 3 else ampspec
@@ -43,8 +40,13 @@ if __name__ == '__main__':
         ampspec = np.append(ampspec, np.zeros([1, ampspec.shape[1]], dtype=np.float64), axis=0)
         phspec = np.append(phspec, np.zeros([1, phspec.shape[1]], dtype=np.complex128), axis=0)
 
-        wav = generateWavFromCQT(ampspec, phspec, opt.sr, opt.hl)
+        wav = generateWavFromCQT(ampspec, phspec, sr, hl)
 
-        output_path = Path(opt.output) / Path("cqt_inv") / amp_path.name
-        print(str(output_path.name), " [", str(i + 1), "/", total_length, "]", sep="")
-        utils.saveWav(wav, output_path, opt.sr)
+        o_path = Path(output_path) / Path("cqt_inv") / path.name
+        print(str(o_path.name), " [", str(i + 1), "/", total_length, "]", sep="")
+        utils.saveWav(wav, o_path, sr)
+    return
+
+if __name__ == '__main__':
+    opt = Options(inverse=True).parse_cmdargs()
+    cqtToWAV(opt.input, opt.phase_input, opt.output, opt.sr, opt.hl)

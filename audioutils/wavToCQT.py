@@ -28,45 +28,30 @@ def magphaseCQT(cqt_complex, crop = False, cl = 128):
     
     return Mdb_normed, P
 
-
-
-if __name__ == '__main__':
-    # opt = Options().parse(input="/home/matsumoto/Documents/data/music/fma/fma_small_separated/Rock/")
-    opt = Options().parse_cmdargs()
-
+def wavToCQT(wav_path, output_path, sr, hl, crop, cl, stereo):
     bins_per_octave = 12 * 12
     n_octaves = 8
     n_bins = bins_per_octave * n_octaves
     
     print("reading audio files")
-    files_path = utils.getAudioFilesPath(opt.input)
-    waves = [librosa.load(i, sr=opt.sr, mono=not opt.stereo) for i in files_path]
+    files_path = utils.getAudioFilesPath(wav_path)
+    waves = [librosa.load(i, sr=sr, mono=not stereo) for i in files_path]
 
     total_length = str(len(waves))
     for i, wav in enumerate(waves):
-        cqt = librosa.cqt(wav[0], opt.sr, opt.hl, n_bins=n_bins, bins_per_octave=bins_per_octave)
-        mag, phase = magphaseCQT(cqt, opt.crop, opt.cl)
+        cqt = librosa.cqt(wav[0], sr, hop_length=hl, n_bins=n_bins, bins_per_octave=bins_per_octave)
+        mag, phase = magphaseCQT(cqt, crop, cl)
         filename = files_path[i].stem
-        out_path_amp = Path(opt.output) / Path("cqt_amp")
-        out_path_phase = Path(opt.output) / Path("cqt_phase")
+        out_path_amp = Path(output_path) / Path("cqt_amp")
+        out_path_phase = Path(output_path) / Path("cqt_phase")
         out_path_amp = (out_path_amp / Path(filename))
         out_path_phase = (out_path_phase / Path(filename))
 
         print(str(out_path_amp.name) + " [", str(i + 1), "/", total_length, "]", sep="")
         utils.saveNpy(mag[:-1,:], out_path_amp)
         utils.saveNpy(phase[:-1,:], out_path_phase)
+    return
 
-    # cqts = [librosa.cqt(i[0], opt.sr, opt.hl, n_bins=n_bins, bins_per_octave=bins_per_octave) for i in waves]
-    # magphases = [magphaseCQT(i, opt.crop, opt.cl) for i in cqts]
-    # filenames = [i.stem for i in files_path]
-    # out_path_amp = Path(opt.output) / Path("cqt_amp")
-    # out_path_phase = Path(opt.output) / Path("cqt_phase")
-
-    # print("saving npy files")
-    # for i, npy in enumerate(magphases):
-    #     out_path = (out_path_amp / Path(filenames[i]))
-    #     utils.saveNpy(npy[0][:-1,:], out_path)
-    
-    # for i, npy in enumerate(magphases):
-    #     out_path = (out_path_phase / Path(filenames[i]))
-    #     utils.saveNpy(npy[1][:-1,:], out_path)
+if __name__ == '__main__':
+    opt = Options().parse_cmdargs()
+    wavToCQT(opt.input, opt.output, opt.sr, opt.hl, opt.crop, opt.cl, opt.stereo)
