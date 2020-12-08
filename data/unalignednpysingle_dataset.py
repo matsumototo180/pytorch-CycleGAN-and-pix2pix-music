@@ -51,7 +51,7 @@ class UnalignedNpySingleDataset(BaseDataset):
         A = np.array([np.load(A_path)]).astype(np.float32)
         A = torch.from_numpy(A[:, :, :])
 
-        print([A.shape, A.type, A.dtype])
+        # print([A.shape, A.type, A.dtype])
         return {'A': A, 'A_paths': A_path}
 
     def __len__(self):

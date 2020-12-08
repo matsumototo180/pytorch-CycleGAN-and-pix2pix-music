@@ -67,7 +67,7 @@ class UnalignedNpyDataset(BaseDataset):
         
         A = torch.from_numpy(A[:, :, :])
         B = torch.from_numpy(B[:, :, :])
-        print([A.shape, A.type, A.dtype])
+        # print([A.shape, A.type, A.dtype])
         return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
