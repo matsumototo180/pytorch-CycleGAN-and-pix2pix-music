@@ -63,7 +63,10 @@ class UnalignedNpyDataset(BaseDataset):
 #         B = self.transform_B(B_img)
         
         A = np.array([np.load(A_path)]).astype(np.float32)
-        B = np.array([np.load(B_path)]).astype(np.float32)	
+        B = np.array([np.load(B_path)]).astype(np.float32)
+
+        A = np.nan_to_num(A)
+        B = np.nan_to_num(B)
         
         A = torch.from_numpy(A[:, :, :])
         B = torch.from_numpy(B[:, :, :])
